@@ -362,3 +362,8 @@ body.tv .cd .cd-box{font-size:20px}
   *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.15s!important}
   .bg-grid,.bg-streaks{animation:none}
 }
+
+/* brand logo (A·an – Lành gạo, Ngon cơm) */
+.logo-img{height:58px;width:auto;display:block;filter:drop-shadow(0 0 10px rgba(108,222,107,.25))}
+.boot-logo img{height:84px;width:auto;vertical-align:middle;filter:drop-shadow(0 0 16px rgba(247,160,40,.35))}
+@media (max-width:720px){.logo-img{height:42px}}
