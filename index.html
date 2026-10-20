@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RICE-CORE OPS · LIVE WAR ROOM</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230F150F'/%3E%3Cpath d='M4 16h6l3-8 6 16 3-8h6' stroke='%236CDE6B' stroke-width='2.5' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..600,0..1,0&display=block">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-streaks" aria-hidden="true"></div>
+<div class="vignette" id="vignette" aria-hidden="true"></div>
+<div class="scan-sweep" id="scanSweep" aria-hidden="true"></div>
+<svg class="leaders" id="leaders" aria-hidden="true"></svg>
+
+<!-- BOOT -->
+<div class="boot" id="boot">
+  <div class="boot-box">
+    <div class="boot-logo">A·AN <span>RICE-CORE OPS</span></div>
+    <pre class="boot-log" id="bootLog"></pre>
+    <div class="boot-bar"><i id="bootBar"></i></div>
+  </div>
+</div>
+
+<!-- AUTH -->
+<div class="auth hidden" id="auth">
+  <form class="auth-box" id="authForm">
+    <div class="label-caps">ACCESS CONTROL · VHXK LIVE</div>
+    <h2>Nhập khoá truy cập</h2>
+    <p>Khoá do Trưởng phòng VHXK cấp. Khoá chỉ lưu trên trình duyệt này.</p>
+    <input id="authKey" type="password" autocomplete="off" placeholder="vhxk_••••••••" required>
+    <input id="authName" type="text" autocomplete="name" placeholder="Tên của bạn (ghi vào nhật ký thao tác)">
+    <button type="submit" class="btn btn-primary">MỞ KHOÁ</button>
+    <div class="auth-err" id="authErr"></div>
+    <a class="auth-demo" href="?demo=1">Xem bản demo với dữ liệu mẫu →</a>
+  </form>
+</div>
+
+<div class="app" id="app">
+  <!-- HEADER -->
+  <header class="card hdr">
+    <div class="hdr-brand">
+      <div class="logo">A·AN</div>
+      <div>
+        <div class="brand-title glow-green">RICE-CORE OPS <span class="pill-red"><i class="dot"></i>LIVE WAR ROOM</span></div>
+        <div class="brand-sub">AAN FOOD JSC · OPERATIONAL COMMAND CENTER · AI AUDIT INBOX</div>
+      </div>
+    </div>
+    <nav class="hdr-nav" id="nav">
+      <a href="#queue" class="active">LIVE</a>
+      <a href="#queue">HÀNG ĐỢI <b id="navQueue">0</b></a>
+      <a href="#timeline">LỊCH TÀU</a>
+      <a href="#picboard">PIC LOAD</a>
+      <a href="#scanlog">NHẬT KÝ QUÉT</a>
+      <a href="#" id="tvToggle" title="Chế độ màn hình treo tường">TV</a>
+    </nav>
+    <div class="hdr-right">
+      <div class="chip-outlook" id="outlookChip">
+        <div class="label-caps">OUTLOOK INTEGRATION</div>
+        <div class="mono" id="outlookStatus">— ĐANG KẾT NỐI</div>
+      </div>
+      <div class="ring-wrap" title="Lượt quét kế tiếp">
+        <svg viewBox="0 0 44 44" class="ring"><circle cx="22" cy="22" r="19" class="ring-bg"/><circle cx="22" cy="22" r="19" class="ring-fg" id="ringFg"/></svg>
+        <div><div class="label-caps">LƯỢT QUÉT KẾ</div><div class="mono big" id="nextScan">--:--</div></div>
+      </div>
+      <div class="clock">
+        <div class="label-caps">HO CHI MINH (UTC+7)</div>
+        <div class="mono clock-time glow-green" id="clock">--/--/---- | --:--:--</div>
+      </div>
+      <div class="defcon" id="defcon"><div class="label-caps">DEFCON</div><div class="mono big" id="defconNum">5</div></div>
+    </div>
+  </header>
+
+  <div class="banner hidden" id="banner"></div>
+
+  <!-- THREAT BAR -->
+  <section class="card threat" id="threat">
+    <div class="threat-left">
+      <span class="material-symbols-outlined">radar</span>
+      <div class="label-caps">MỨC ĐỘ BÁO ĐỘNG<br>TỔNG THỂ</div>
+      <div class="threat-level" id="threatLevel">—</div>
+    </div>
+    <div class="threat-gauge" id="threatGauge"></div>
+    <div class="threat-stats mono" id="threatStats"></div>
+    <div class="threat-conf mono" id="threatConf"></div>
+  </section>
+
+  <!-- KPI -->
+  <section class="kpis" id="kpis"></section>
+
+  <!-- MAIN -->
+  <main class="main">
+    <section class="card col-queue" id="queue">
+      <div class="sec-hdr">
+        <div class="sec-title"><span class="material-symbols-outlined">assignment_late</span>HÀNG ĐỢI SỰ CỐ &amp; HÀNH ĐỘNG <span class="tag-red" id="queueBadge">0 KHẨN CẤP</span></div>
+        <div class="sec-tools">
+          <input id="search" class="search" type="search" placeholder="Tìm HĐ / lô / khách / PIC…">
+          <span class="label-caps">SẮP XẾP:</span><span class="tag-green">MỨC ĐỘ → DEADLINE</span>
+        </div>
+      </div>
+      <div class="filters" id="filters"></div>
+      <div class="queue-list" id="queueList"></div>
+      <div class="allclear hidden" id="allClear">
+        <div class="radar">
+          <div class="radar-ring r1"></div><div class="radar-ring r2"></div><div class="radar-ring r3"></div>
+          <div class="radar-sweep"></div><div class="radar-ticks"></div>
+        </div>
+        <div class="allclear-title glow-green">TẤT CẢ ỔN ĐỊNH</div>
+        <div class="mono" id="allClearSub">Không có việc 🔴/🟡 đang mở</div>
+      </div>
+      <details class="resolved" id="resolvedWrap">
+        <summary class="label-caps">ĐÃ XỬ LÝ TRONG 48H · <b id="resolvedCount">0</b></summary>
+        <div id="resolvedList"></div>
+      </details>
+    </section>
+
+    <aside class="col-side">
+      <section class="card" id="timeline">
+        <div class="sec-hdr"><div class="sec-title"><span class="material-symbols-outlined">timer</span>ĐẾM NGƯỢC TIẾN ĐỘ 72H TỚI</div><div class="label-caps">T-6H → T+72H</div></div>
+        <div class="tl" id="tl"></div>
+        <div class="tl-list" id="tlList"></div>
+      </section>
+      <section class="card" id="picboard">
+        <div class="sec-hdr"><div class="sec-title"><span class="material-symbols-outlined">groups</span>TẢI VIỆC THEO PIC</div><div class="label-caps" id="picCount">0 NHÂN SỰ</div></div>
+        <div class="pics" id="pics"></div>
+      </section>
+      <section class="card" id="scanlog">
+        <div class="sec-hdr"><div class="sec-title"><span class="material-symbols-outlined">terminal</span>NHẬT KÝ QUÉT INBOX</div><div class="label-caps live-dot">AUTO-LISTENING</div></div>
+        <div class="label-caps sub" id="stripLabel">TIẾN ĐỘ QUÉT HÔM NAY</div>
+        <div class="strip" id="strip"></div>
+        <pre class="term" id="term"></pre>
+      </section>
+    </aside>
+  </main>
+
+  <section class="bottom">
+    <section class="card">
+      <div class="sec-hdr"><div class="sec-title"><span class="material-symbols-outlined">grid_on</span>BẢN ĐỒ NHIỆT RỦI RO · KHÁCH HÀNG × DANH MỤC</div>
+        <div class="legend"><i class="lg-red"></i>Khẩn cấp <i class="lg-amber"></i>Cảnh báo <i class="lg-dim"></i>Bình thường</div></div>
+      <div class="heat" id="heat"></div>
+    </section>
+    <section class="card">
+      <div class="sec-hdr"><div class="sec-title"><span class="material-symbols-outlined">monitoring</span>XU HƯỚNG SỰ CỐ THEO LƯỢT QUÉT</div><div class="label-caps" id="trendRange"></div></div>
+      <div class="trend" id="trend"></div>
+      <div class="trend-note mono" id="trendNote"></div>
+    </section>
+  </section>
+
+  <footer class="ftr mono">
+    <span><i class="dot dot-green"></i> HỆ THỐNG GIÁM SÁT CHIẾN THUẬT: AAN FOOD JSC EXPORT COMMAND</span>
+    <span>NGUỒN: OUTLOOK hoadt@aan.vn · AI SCAN MỖI GIỜ (07:00–19:00 T2–T7) · SINGLE SOURCE OF TRUTH: <a id="sheetLink" target="_blank" rel="noopener">GOOGLE SHEETS</a></span>
+    <span id="buildInfo">BUILD —</span>
+  </footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
